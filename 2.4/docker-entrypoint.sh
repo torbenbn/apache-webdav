@@ -101,6 +101,9 @@ fi
 # Create directories for Dav data and lock database.
 [ ! -d "/var/lib/dav/data" ] && mkdir -p "/var/lib/dav/data"
 [ ! -e "/var/lib/dav/DavLock" ] && touch "/var/lib/dav/DavLock"
-chown -R www-data:www-data "/var/lib/dav"
+#chown -R www-data:www-data "/var/lib/dav"
+
+gawk -i 'BEGIN {FS=OFS=":";} $1=="www-data" {$2='$UID';$3='$GID';} {print;}' /etc/passwd
+gawk -i 'BEGIN {FS=OFS=":";} $1=="www-data" {$3='$GID';} {print;}' /etc/group
 
 exec "$@"

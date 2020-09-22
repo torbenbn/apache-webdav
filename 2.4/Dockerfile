@@ -4,6 +4,9 @@ FROM httpd:alpine
 # ENV HTTPD_PREFIX /usr/local/apache2
 # WORKDIR "$HTTPD_PREFIX"
 
+ENV UID 1000
+ENV GID 1000
+
 # Copy in our configuration files.
 COPY conf/ conf/
 
@@ -13,7 +16,6 @@ RUN set -ex; \
     # Create directories for Dav data and lock database.
     mkdir -p "/var/lib/dav/data"; \
     touch "/var/lib/dav/DavLock"; \
-    chown -R www-data:www-data "/var/lib/dav"; \
     \
     # Enable DAV modules.
     for i in dav dav_fs; do \
@@ -47,7 +49,7 @@ RUN set -ex; \
     ln -s ../conf-available/dav.conf "conf/conf-enabled"; \
     ln -s ../sites-available/default.conf "conf/sites-enabled"; \
     # Install openssl if we need to generate a self-signed certificate.
-    apk add --no-cache openssl
+    apk add --no-cache openssl gawk
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 EXPOSE 80/tcp 443/tcp
