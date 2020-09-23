@@ -11,9 +11,6 @@ ENV GID 1000
 COPY conf/ conf/
 
 RUN set -ex; \
-    # Install openssl if we need to generate a self-signed certificate.
-    # Install gawk as busybox awk doesn't do inline editing
-    apk add --no-cache openssl gawk \
     # Create empty default DocumentRoot.
     mkdir -p "/var/www/html"; \
     # Create directories for Dav data and lock database.
@@ -50,7 +47,10 @@ RUN set -ex; \
     mkdir -p "conf/conf-enabled"; \
     mkdir -p "conf/sites-enabled"; \
     ln -s ../conf-available/dav.conf "conf/conf-enabled"; \
-    ln -s ../sites-available/default.conf "conf/sites-enabled";
+    ln -s ../sites-available/default.conf "conf/sites-enabled"; \
+    # Install openssl if we need to generate a self-signed certificate.
+    # Install gawk as busybox awk doesn't do inline editing
+    apk add --no-cache openssl gawk \
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 EXPOSE 80/tcp 443/tcp
