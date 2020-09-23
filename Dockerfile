@@ -9,6 +9,7 @@ ENV GID 1000
 
 # Copy in our configuration files.
 COPY conf/ conf/
+COPY docker-entrypoint.sh /usr/local/bin/
 
 RUN set -ex; \
     # Create empty default DocumentRoot.
