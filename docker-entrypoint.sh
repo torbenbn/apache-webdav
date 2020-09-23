@@ -99,15 +99,21 @@ if [ -e /privkey.pem ] && [ -e /cert.pem ]; then
 fi
 
 # Change uid and gid of www-data user to what is specified in the environment
-gawk -i 'BEGIN {FS=OFS=":";} $1=="www-data" {$2='"$UID"';$3='"$GID"';} {print;}' /etc/passwd
-gawk -i 'BEGIN {FS=OFS=":";} $1=="www-data" {$3='"$GID"';} {print;}' /etc/group
+cp /etc/passwd /etc/passwd-
+awk 'BEGIN {FS=OFS=":";} $1=="www-data" {$3='"$UID"';$4='"$GID"';} {print;}' /etc/passwd- > /etc/passwd
+
+cp /etc/group /etc/group-
+awk 'BEGIN {FS=OFS=":";} $1=="www-data" {$3='"$GID"';} {print;}' /etc/group- > /etc/group
 
 # Create directories for Dav data and lock database.
-[ ! -d "/var/lib/dav/data" ] && mkdir -p "/var/lib/dav/data"
+if [ ! -d "/var/lib/dav/data" ] ; then
+    mkdir -p "/var/lib/dav/data"
+    chown www-data:www-data "/var/lib/data"
+fi
 [ ! -e "/var/lib/dav/DavLock" ] && touch "/var/lib/dav/DavLock"
 
 # set ownership of /var/lib/dav and /var/lib/dav/DavLock - leave /var/lib/dav/data alone
 chown www-data:www-data "/var/lib/dav"
-chown -R www-data:www-data "/var/lib/dav/DavLock"
+chown www-data:www-data "/var/lib/dav/DavLock"
 
 exec "$@"

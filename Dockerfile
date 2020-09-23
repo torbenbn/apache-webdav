@@ -9,7 +9,6 @@ ENV GID 1000
 
 # Copy in our configuration files.
 COPY conf/ conf/
-COPY docker-entrypoint.sh /usr/local/bin/
 
 RUN set -ex; \
     # Create empty default DocumentRoot.
@@ -51,7 +50,7 @@ RUN set -ex; \
     ln -s ../sites-available/default.conf "conf/sites-enabled"; \
     # Install openssl if we need to generate a self-signed certificate.
     # Install gawk as busybox awk doesn't do inline editing
-    apk add --no-cache openssl gawk \
+    apk add --no-cache openssl
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 EXPOSE 80/tcp 443/tcp
