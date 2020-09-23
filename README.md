@@ -9,13 +9,20 @@ This image runs an easily configurable WebDAV server with Apache.
 You can configure the authentication type, the authentication of multiple users, or to run with a self-signed SSL certificate. If you want a Let's Encrypt certificate, see an example of how to do that [here](https://github.com/BytemarkHosting/configs-webdav-docker).
 
 * **Code repository:**
-  https://github.com/BytemarkHosting/docker-webdav
+  https://github.com/torbenbn/docker-webdav
 * **Where to file issues:**
-  https://github.com/BytemarkHosting/docker-webdav/issues
+  https://github.com/torbenbn/docker-webdav/issues
 * **Maintained by:**
-  [Bytemark Hosting](https://www.bytemark.co.uk)
+  [Torben Nielsen](https://github.com/torbenbn)
 * **Supported architectures:**
   [Any architecture that the `httpd` image supports](https://hub.docker.com/_/httpd/)
+
+## Fork
+
+This project was forked from [BytemarkHosting](https://github.com/BytemarkHosting/docker-webdav) to scratch a couple of personal itches:
+* The existing entrypoint.sh changed the ownership of all files in the shared directory to the internal www-data user so I removed the relevant lines.  
+* Secondly, I wanted to share files owned by 'me' so I added the UID and GID environment variables to make this configurable.  Their defaults are both 1000.
+This works by hacking the passwd and group files so that the internal www-data user and group get the specified ids.
 
 ## Usage
 
