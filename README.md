@@ -1,6 +1,6 @@
 ## Supported tags
 
-* [`2.4`, `latest` (*2.4/Dockerfile*)](https://github.com/BytemarkHosting/docker-webdav/blob/master/2.4/Dockerfile)
+* [`1.0`, `latest` (*1.0/Dockerfile*)](https://github.com/torben/docker-webdav/blob/master/1.0/Dockerfile)
 
 ## Quick reference
 
@@ -103,6 +103,8 @@ Once you've created your own `user.passwd`, bind mount it into your container wi
 
 All environment variables are optional. You probably want to at least specify `USERNAME` and `PASSWORD` (or bind mount your own authentication file to `/user.passwd`) otherwise nobody will be able to access your WebDAV server!
 
+* **`UID`**: The user id under which apache will run. The default is `1000`.
+* **`GID`**: The group id under which apache will run. The default is `1000`.
 * **`SERVER_NAMES`**: Comma-separated list of domains (eg, `example.com,www.example.com`). The first is set as the [ServerName](https://httpd.apache.org/docs/current/mod/core.html#servername), and the rest (if any) are set as [ServerAlias](https://httpd.apache.org/docs/current/mod/core.html#serveralias). The default is `localhost`.
 * **`LOCATION`**: The URL path for WebDAV (eg, if set to `/webdav` then clients should connect to `example.com/webdav`). The default is `/`.
 * **`AUTH_TYPE`**: Apache authentication type to use. This can be `Basic` (best choice for HTTPS) or `Digest` (best choice for HTTP). The default is `Basic`.
