@@ -1,6 +1,6 @@
 ## Supported tags
 
-* [`1.0`, `latest` (*1.0/Dockerfile*)](https://github.com/torbenbn/docker-webdav/blob/master/1.0/Dockerfile)
+* [`1.0`, `latest` (*1.0/Dockerfile*)](https://github.com/torbenbn/apache-webdav/blob/master/1.0/Dockerfile)
 
 ## Quick reference
 
@@ -9,11 +9,11 @@ This image runs an easily configurable WebDAV server with Apache.
 You can configure the authentication type, the authentication of multiple users, or to run with a self-signed SSL certificate. If you want a Let's Encrypt certificate, see an example of how to do that [here](https://github.com/BytemarkHosting/configs-webdav-docker).
 
 * **Code repository:**
-  https://github.com/torbenbn/docker-webdav
+  https://github.com/torbenbn/apache-webdav
 * **Where to file issues:**
-  https://github.com/torbenbn/docker-webdav/issues
+  https://github.com/torbenbn/apache-webdav/issues
 * **Maintained by:**
-  [Torben Nielsen](https://github.com/torbenbn)
+  [Torben Bang Nielsen](https://github.com/torbenbn)
 * **Supported architectures:**
   [Any architecture that the `httpd` image supports](https://hub.docker.com/_/httpd/)
 
@@ -38,7 +38,6 @@ To make sure your data doesn't get deleted, you'll probably want to create a per
 docker run --restart always -v /srv/dav:/var/lib/dav \
     -e AUTH_TYPE=Digest -e USERNAME=alice -e PASSWORD=secret1234 \
     --publish 80:80 -d bytemark/webdav
-
 ```
 
 #### Via Docker Compose:
@@ -47,17 +46,18 @@ docker run --restart always -v /srv/dav:/var/lib/dav \
 version: '3'
 services:
   webdav:
-    image: bytemark/webdav
+    image: torbenbn/apache-webdav
     restart: always
     ports:
       - "80:80"
     environment:
+      UID: 1000
+      GID: 1000
       AUTH_TYPE: Digest
       USERNAME: alice
       PASSWORD: secret1234
     volumes:
-      - /srv/dav:/var/lib/dav
-
+      - /share/webdav:/var/lib/dav/data
 ```
 ### Secure WebDAV with SSL
 
@@ -69,7 +69,6 @@ If you're happy with a self-signed SSL certificate, specify `-e SSL_CERT=selfsig
 docker run --restart always -v /srv/dav:/var/lib/dav \
     -e AUTH_TYPE=Basic -e USERNAME=test -e PASSWORD=test \
     -e SSL_CERT=selfsigned --publish 443:443 -d bytemark/webdav
-
 ```
 
 If you bind mount a certificate chain to `/cert.pem` and a private key to `/privkey.pem`, the container will use that instead!
@@ -84,7 +83,6 @@ If using `Basic` authentication, run the following commands:
 touch user.passwd
 htpasswd -B user.passwd alice
 htpasswd -B user.passwd bob
-
 ```
 
 If using `Digest` authentication, run the following commands. (NB: The default `REALM` is `WebDAV`. If you specify your own `REALM`, you'll need to run `htdigest` again with the new name.)
@@ -94,7 +92,6 @@ If using `Digest` authentication, run the following commands. (NB: The default `
 touch user.passwd
 htdigest user.passwd WebDAV alice
 htdigest user.passwd WebDAV bob
-
 ```
 
 Once you've created your own `user.passwd`, bind mount it into your container with `-v /path/to/user.passwd:/user.passwd`.
@@ -113,4 +110,3 @@ All environment variables are optional. You probably want to at least specify `U
 * **`PASSWORD`**: Authenticate with this password (and the username above). This is ignored if you bind mount your own authentication file to `/user.passwd`.
 * **`ANONYMOUS_METHODS`**: Comma-separated list of HTTP request methods (eg, `GET,POST,OPTIONS,PROPFIND`). Clients can use any method you specify here without authentication. Set to `ALL` to disable authentication. The default is to disallow any anonymous access.
 * **`SSL_CERT`**: Set to `selfsigned` to generate a self-signed certificate and enable Apache's SSL module. If you specify `SERVER_NAMES`, the first domain is set as the Common Name.
-
