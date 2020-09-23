@@ -98,12 +98,16 @@ if [ -e /privkey.pem ] && [ -e /cert.pem ]; then
         "$HTTPD_PREFIX/conf/sites-enabled"
 fi
 
+# Change uid and gid of www-data user to what is specified in the environment
+gawk -i 'BEGIN {FS=OFS=":";} $1=="www-data" {$2='"$UID"';$3='"$GID"';} {print;}' /etc/passwd
+gawk -i 'BEGIN {FS=OFS=":";} $1=="www-data" {$3='"$GID"';} {print;}' /etc/group
+
 # Create directories for Dav data and lock database.
 [ ! -d "/var/lib/dav/data" ] && mkdir -p "/var/lib/dav/data"
 [ ! -e "/var/lib/dav/DavLock" ] && touch "/var/lib/dav/DavLock"
-#chown -R www-data:www-data "/var/lib/dav"
 
-gawk -i 'BEGIN {FS=OFS=":";} $1=="www-data" {$2='$UID';$3='$GID';} {print;}' /etc/passwd
-gawk -i 'BEGIN {FS=OFS=":";} $1=="www-data" {$3='$GID';} {print;}' /etc/group
+# set ownership of /var/lib/dav and /var/lib/dav/DavLock - leave /var/lib/dav/data alone
+chown www-data:www-data "/var/lib/dav"
+chown -R www-data:www-data "/var/lib/dav/DavLock"
 
 exec "$@"
