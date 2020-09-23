@@ -1,6 +1,6 @@
 ## Supported tags
 
-* [`1.0`, `latest` (*1.0/Dockerfile*)](https://github.com/torben/docker-webdav/blob/master/1.0/Dockerfile)
+* [`1.0`, `latest` (*1.0/Dockerfile*)](https://github.com/torbenbn/docker-webdav/blob/master/1.0/Dockerfile)
 
 ## Quick reference
 
